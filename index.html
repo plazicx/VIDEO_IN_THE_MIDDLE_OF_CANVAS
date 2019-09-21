@@ -1,0 +1,158 @@
+  
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Display Webcam Stream</title>
+
+<style>
+	.container {
+  margin: 0 auto;
+  position: relative;
+}
+	.video {
+  width: 100%;
+  height: auto;
+  position:relative;
+  top: 800;
+  left: 500;
+}
+ .canvas {
+	 position:absolute;
+	 top:0;
+	 left:0;
+	 z-index:0;
+	 background-color:rgba(255,0,0,0.5);
+ }
+</style>
+
+<div class="container">
+<! <video class="video" id="player" autoplay src="http://upload.wikimedia.org/wikipedia/commons/7/79/Big_Buck_Bunny_small.ogv" onplay="resize_canvas(this)"></video>
+<video class="video" id="player" autoplay src="http://upload.wikimedia.org/wikipedia/commons/7/79/Big_Buck_Bunny_small.ogv"  ></video>
+<button id="capture">Capture</button>
+<canvas class="canvas" id="cv1" width=1920 height=1080 ></canvas> 
+<! <canvas class="canvas" id="cv1"   ></canvas>
+</div>
+
+<script>
+const player = document.getElementById('player');
+  const canvas = document.getElementById('cv1');
+  const context = canvas.getContext('2d');
+  const captureButton = document.getElementById('capture');
+  context.beginPath();
+  context.strokeStyle = '#003300'; 
+  context.arc(100*Math.random(), 75*Math.random(), 50, 0, 2 * Math.PI);
+  context.fillStyle = 'green';
+  context.fill();
+  context.lineWidth = 5;
+  context.stroke();
+  //player.addEventListener("click",fullscreen);
+  canvas.addEventListener("click",fullscreen_canvas);
+  const constraints = {
+    video: true,
+  };
+
+
+  // set canvas size = video size when known
+  if (1===1) {
+player.addEventListener('loadedmetadata', function() {
+  cv1.width = 1920/2.; //1.2*player.videoWidth;
+  cv1.height = 1080/2.;//1.2*player.videoHeight;
+});
+  }
+
+ /* captureButton.addEventListener('click', () => {
+    // Draw the video frame to the canvas.
+    context.drawImage(player, 0, 0, canvas.width, canvas.height);
+  });
+*/
+  // Attach the video stream to the video element and autoplay.
+  if (1===1)
+  {
+  navigator.mediaDevices.getUserMedia(constraints)
+    .then((stream) => {
+      player.srcObject = stream;
+    });
+}
+
+player.addEventListener('play', function() {
+  var $this = this; //cache
+  (function loop() {
+    if (!$this.paused && !$this.ended) {
+      ax=0.5*(canvas.width-player.videoWidth);
+      ay=0.5*(canvas.height-player.videoHeight);
+      console.log(ax,ay);
+      context.drawImage($this, ax, ay);
+      setTimeout(loop, 1000 / 30); // drawing at 30fps
+    }
+  })();
+}, 0);
+
+    function fullscreen(){
+		console.log("video fullscreen")
+  var el = document.getElementById('player');
+  context.beginPath();
+  context.arc(100*Math.random(), 75*Math.random(), 50, 0, 2 * Math.PI);
+  context.strokeStyle = '#003300'; 
+  context.stroke();
+  if(el.webkitRequestFullScreen) {
+	  el.webkitRequestFullScreen();
+	  resize_canvas(el);
+  }
+ else {
+	el.mozRequestFullScreen();
+ }            
+}
+ function fullscreen_canvas(){
+  var el = document.getElementById('cv1');
+  console.log("canvas go full screen");
+  context.beginPath();
+  context.strokeStyle = '#003300'; 
+  context.arc(1000*Math.random(), 1000*Math.random(), 50, 0, 2 * Math.PI);
+  context.fillStyle = 'green';
+  context.fill();
+  context.lineWidth = 5;
+  context.stroke();
+  if(el.webkitRequestFullScreen) {
+      el.webkitRequestFullScreen();
+  }
+ else {
+	el.mozRequestFullScreen();
+ }            
+}
+function resize_canvas(element)
+{
+  var w = element.offsetWidth;
+  var h = element.offsetHeight;
+  var cv = document.getElementById("cv1");
+  cv.width = w;
+  cv.height =h;
+  context.beginPath();
+  context.strokeStyle = '#003300'; 
+  context.arc(100*Math.random(), 75*Math.random(), 50, 0, 2 * Math.PI);
+  context.fillStyle = 'green';
+  context.fill();
+  context.lineWidth = 5;
+  context.stroke();
+  console.log("resize canvas");
+}
+function resize_video(element)
+{
+  var w = element.offsetWidth;
+  var h = element.offsetHeight;
+  var cv = document.getElementById("player");
+  cv.width = w;
+  cv.height =h;
+  context.beginPath();
+  context.arc(100*Math.random(), 75*Math.random(), 50, 0, 2 * Math.PI);
+  context.strokeStyle = '#003300'; 
+  context.stroke();
+  console.log("resizing video");
+}
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
+<! <script src="./public/game.js" ></script>
+</html>
